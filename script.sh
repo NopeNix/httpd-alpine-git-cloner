@@ -1,21 +1,24 @@
 #!/bin/sh
 
-# Color variables
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-# Code
-echo "${BLUE}Cloning Sender-Kollektiv/Sender-Homepage-Public..${NC}"
+# Cloning Repo
+echo "Cloning into $GITREPO.."
 GITREPOLOWERCASE=$(echo "$GITREPO" | tr '[:upper:]' '[:lower:]')
 GITREPONAME=$(echo "$GITREPOLOWERCASE" | awk -F '/' '{print $2}')
 cd /tmp
 git clone https://$GITTOKEN@github.com/$GITREPOLOWERCASE.git
+echo ""
 
-echo "${BLUE}removing default htdocs files..${NC}"
+# Remove Default HTML Files
+echo "removing default htdocs files.."
 rm -R /usr/local/apache2/htdocs/*
+echo ""
 
-echo "${BLUE}Copying Files to /usr/local/apache2/htdocs/..${NC}"
+# Move Files
+echo "Copying Files to /usr/local/apache2/htdocs/.."
 cp -R "./$GITREPONAME/htdocs/" /usr/local/apache2/
+rm -R "./$GITREPONAME/"
+echo ""
 
-echo "${BLUE}Starting httpd Server..${NC}"
+# Start Server
+echo "Starting httpd Server.."
 httpd-foreground
